@@ -30,21 +30,18 @@ export default function TicketForm({ onSubmit }) {
   const validateForm = () => {
     const newErrors = {}
     
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required'
     } else if (formData.name.length > 100) {
       newErrors.name = 'Name must be less than 100 characters'
     }
     
-    // Issue validation
     if (!formData.issue.trim()) {
       newErrors.issue = 'Issue description is required'
     } else if (formData.issue.length > 1000) {
       newErrors.issue = 'Issue description must be less than 1000 characters'
     }
     
-    // Priority validation
     if (!['LOW', 'MEDIUM', 'HIGH', 'URGENT'].includes(formData.priority)) {
       newErrors.priority = 'Please select a valid priority'
     }
@@ -60,7 +57,6 @@ export default function TicketForm({ onSubmit }) {
       [name]: value
     }))
     
-    // Clear error for this field when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -81,11 +77,9 @@ export default function TicketForm({ onSubmit }) {
     setErrors({})
     
     try {
-      // Use the enhanced API client that triggers real-time events
       const { response, result } = await TicketApiClient.createTicket(formData)
       
       if (result.success) {
-        // Reset form on successful submission
         setFormData({
           name: '',
           issue: '',
@@ -94,15 +88,12 @@ export default function TicketForm({ onSubmit }) {
         setErrors({})
         setSubmitError(null)
         
-        // Show success message
         showSuccess(`Ticket #${result.ticket.id.substring(0, 8)} created successfully!`)
         
-        // Call onSubmit callback if provided
         if (onSubmit) {
           onSubmit(result.ticket)
         }
       } else {
-        // Handle validation errors from server
         if (result.details) {
           const serverErrors = {}
           result.details.forEach(error => {
@@ -118,7 +109,6 @@ export default function TicketForm({ onSubmit }) {
     } catch (error) {
       const { userMessage } = handleApiError(error, 'Submit ticket')
       setSubmitError(userMessage)
-      // Error already shown by handleApiError
     } finally {
       setIsLoading(false)
     }
@@ -146,7 +136,6 @@ export default function TicketForm({ onSubmit }) {
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name Field */}
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
             Name *
@@ -168,7 +157,6 @@ export default function TicketForm({ onSubmit }) {
           )}
         </div>
 
-        {/* Issue Field */}
         <div>
           <label htmlFor="issue" className="block text-sm font-medium text-gray-700 mb-1">
             Issue Description *
@@ -190,7 +178,6 @@ export default function TicketForm({ onSubmit }) {
           )}
         </div>
 
-        {/* Priority Field */}
         <div>
           <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
             Priority *
@@ -216,7 +203,6 @@ export default function TicketForm({ onSubmit }) {
           )}
         </div>
 
-        {/* Submit Error */}
         {submitError && (
           <ErrorDisplay 
             error={submitError}
@@ -226,7 +212,6 @@ export default function TicketForm({ onSubmit }) {
           />
         )}
 
-        {/* Form Actions */}
         <div className="flex gap-3 pt-4">
           <button
             type="submit"

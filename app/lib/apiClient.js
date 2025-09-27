@@ -2,7 +2,6 @@
 
 import { broadcastTicketCreated, broadcastTicketStatusChanged } from './realtimeSimulator';
 
-// Enhanced API client that triggers real-time events
 export class TicketApiClient {
   static async createTicket(ticketData) {
     try {
@@ -15,7 +14,6 @@ export class TicketApiClient {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Trigger real-time event for immediate UI updates
         setTimeout(() => {
           broadcastTicketCreated(result.ticket);
         }, 100);
@@ -39,7 +37,6 @@ export class TicketApiClient {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Trigger real-time event for immediate UI updates
         const oldStatus = currentTicket ? currentTicket.status : 'UNKNOWN';
         setTimeout(() => {
           broadcastTicketStatusChanged(ticketId, oldStatus, status, result.ticket);

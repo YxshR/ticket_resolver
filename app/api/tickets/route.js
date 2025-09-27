@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { prisma } from '@/app/lib/prisma'
 import { broadcastTicketCreated } from '@/app/lib/socketUtils'
 
-// Validation schema for ticket creation
 const createTicketSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
   issue: z.string().min(1, 'Issue description is required').max(1000, 'Issue description must be less than 1000 characters'),
@@ -16,11 +15,9 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
     
-    // Parse filter parameters
     const priorityFilter = searchParams.get('priority')
     const statusFilter = searchParams.get('status')
     
-    // Build where clause for filtering
     const where = {}
     
     if (priorityFilter) {
@@ -37,11 +34,10 @@ export async function GET(request) {
       }
     }
 
-    // Fetch tickets with filtering and sorting
     const tickets = await prisma.ticket.findMany({
       where,
       orderBy: {
-        createdAt: 'desc' // Latest first as per requirements
+        createdAt: 'desc'
       }
     })
 
@@ -65,7 +61,6 @@ export async function POST(request) {
   try {
     const body = await request.json()
     
-    // Validate input data
     const validationResult = createTicketSchema.safeParse(body)
     
     if (!validationResult.success) {
@@ -81,17 +76,15 @@ export async function POST(request) {
 
     const { name, issue, priority } = validationResult.data
 
-    // Create ticket in database
     const ticket = await prisma.ticket.create({
       data: {
         name,
         issue,
         priority,
-        status: 'OPEN' // Default status as per requirements
+        status: 'OPEN'
       }
     })
 
-    // Broadcast ticket creation via WebSocket
     broadcastTicketCreated(ticket)
 
     return NextResponse.json({

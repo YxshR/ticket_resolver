@@ -12,7 +12,6 @@ export default function Home() {
 
   const handleTicketSubmit = (ticket) => {
     console.log('Ticket submitted:', ticket)
-    // Switch to dashboard after successful submission
     setActiveTab('dashboard')
   }
 
@@ -20,11 +19,9 @@ export default function Home() {
     <ErrorBoundary fallbackMessage="The helpdesk application encountered an error. Please refresh the page to continue.">
       <ToastProvider>
         <div className="min-h-screen bg-gray-50">
-      {/* Header with Navigation */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            {/* Logo and Title */}
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -39,7 +36,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Navigation Tabs */}
             <nav className="flex space-x-1">
               <button
                 onClick={() => setActiveTab('dashboard')}
@@ -76,9 +72,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Page Title and Description */}
         <div className="mb-6 sm:mb-8">
           <div className="text-center sm:text-left">
             {activeTab === 'dashboard' ? (
@@ -103,7 +97,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Content Sections */}
         <div className="space-y-6 sm:space-y-8">
           {activeTab === 'submit' ? (
             <section className="flex justify-center">
@@ -119,7 +112,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">

@@ -13,10 +13,8 @@ export default function Toast({
   const [isAnimating, setIsAnimating] = useState(false)
 
   useEffect(() => {
-    // Start animation after mount
     setIsAnimating(true)
 
-    // Auto-dismiss after duration
     const timer = setTimeout(() => {
       handleClose()
     }, duration)
@@ -29,7 +27,7 @@ export default function Toast({
     setTimeout(() => {
       setIsVisible(false)
       if (onClose) onClose()
-    }, 300) // Match animation duration
+    }, 300)
   }
 
   if (!isVisible) return null
@@ -135,7 +133,6 @@ export default function Toast({
   )
 }
 
-// Toast container component for managing multiple toasts
 export function ToastContainer({ toasts = [], onRemoveToast }) {
   return (
     <div className="fixed inset-0 pointer-events-none z-50">

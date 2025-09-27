@@ -6,9 +6,6 @@ import {
   unsubscribeFromRealtimeEvents 
 } from './realtimeSimulator';
 
-// Simplified WebSocket client for development
-// This provides a mock implementation that simulates real-time updates
-
 let mockSocket = null;
 let eventListeners = new Map();
 let isConnected = false;
@@ -18,15 +15,12 @@ export function initializeSocketClient() {
   if (!mockSocket) {
     console.log('Initializing mock Socket.IO client with real-time simulator...');
     
-    // Initialize the real-time simulator
     initializeRealtimeSimulator();
     
-    // Create a mock socket object
     mockSocket = {
       id: `mock-${Date.now()}`,
       connected: false,
       
-      // Mock connection methods
       connect: () => {
         console.log('Mock socket connecting...');
         setTimeout(() => {
@@ -34,11 +28,9 @@ export function initializeSocketClient() {
           socketId = mockSocket.id;
           mockSocket.connected = true;
           
-          // Trigger connect event
           const connectListeners = eventListeners.get('connect') || [];
           connectListeners.forEach(callback => callback());
           
-          // Trigger connected event with mock data
           const connectedListeners = eventListeners.get('connected') || [];
           connectedListeners.forEach(callback => callback({
             message: 'Connected to mock helpdesk server',
@@ -55,19 +47,16 @@ export function initializeSocketClient() {
         isConnected = false;
         mockSocket.connected = false;
         
-        // Trigger disconnect event
         const disconnectListeners = eventListeners.get('disconnect') || [];
         disconnectListeners.forEach(callback => callback('client disconnect'));
       },
       
-      // Event listener methods
       on: (event, callback) => {
         if (!eventListeners.has(event)) {
           eventListeners.set(event, []);
         }
         eventListeners.get(event).push(callback);
         
-        // For ticket events, also subscribe to the real-time simulator
         if (event.startsWith('ticket:')) {
           subscribeToRealtimeEvents(event, (e) => {
             callback(e.detail);
@@ -84,7 +73,6 @@ export function initializeSocketClient() {
           }
         }
         
-        // For ticket events, also unsubscribe from the real-time simulator
         if (event.startsWith('ticket:')) {
           unsubscribeFromRealtimeEvents(event, callback);
         }
@@ -95,7 +83,6 @@ export function initializeSocketClient() {
       }
     };
     
-    // Auto-connect
     setTimeout(() => {
       mockSocket.connect();
     }, 50);
@@ -124,7 +111,6 @@ export function disconnectSocket() {
   }
 }
 
-// Event subscription helpers
 export function subscribeToTicketEvents(callbacks) {
   const client = getSocketClient();
   
@@ -159,7 +145,6 @@ export function unsubscribeFromTicketEvents(callbacks) {
   }
 }
 
-// Connection status helpers
 export function isSocketConnected() {
   return isConnected;
 }
@@ -173,7 +158,6 @@ export function forceReconnect() {
     console.log('Forcing mock Socket.IO reconnection...');
     try {
       mockSocket.disconnect();
-      // Wait a moment before reconnecting
       setTimeout(() => {
         if (mockSocket) {
           mockSocket.connect();
@@ -184,7 +168,6 @@ export function forceReconnect() {
       throw error;
     }
   } else {
-    // If no socket exists, try to initialize a new one
     try {
       initializeSocketClient();
     } catch (error) {
@@ -194,7 +177,6 @@ export function forceReconnect() {
   }
 }
 
-// Add connection health check
 export function checkConnectionHealth() {
   if (!mockSocket) return { connected: false, healthy: false };
   
@@ -204,7 +186,6 @@ export function checkConnectionHealth() {
   return { connected, healthy, socketId };
 }
 
-// Add graceful cleanup
 export function cleanupSocket() {
   if (mockSocket) {
     try {
@@ -221,7 +202,6 @@ export function cleanupSocket() {
   }
 }
 
-// Simulate real-time events for testing
 export function simulateTicketCreated(ticket) {
   if (mockSocket && isConnected) {
     const listeners = eventListeners.get('ticket:created') || [];

@@ -28,7 +28,6 @@ export function ToastProvider({ children }) {
 
     setToasts(prev => [...prev, toast])
 
-    // Auto-remove toast after duration
     setTimeout(() => {
       removeToast(id)
     }, toast.duration)
@@ -44,7 +43,6 @@ export function ToastProvider({ children }) {
     setToasts([])
   }, [])
 
-  // Convenience methods
   const showSuccess = useCallback((message, options) => {
     return addToast(message, 'success', options)
   }, [addToast])

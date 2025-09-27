@@ -19,7 +19,6 @@ export default function FilterPanel({ onFilterChange, currentFilters = { priorit
   const [filters, setFilters] = useState(currentFilters)
   const [isExpanded, setIsExpanded] = useState(false)
 
-  // Update local state when currentFilters prop changes
   useEffect(() => {
     setFilters(currentFilters)
   }, [currentFilters])
@@ -55,7 +54,6 @@ export default function FilterPanel({ onFilterChange, currentFilters = { priorit
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-      {/* Filter Header */}
       <div className="px-4 py-3 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -92,10 +90,8 @@ export default function FilterPanel({ onFilterChange, currentFilters = { priorit
         </div>
       </div>
 
-      {/* Filter Content */}
       {isExpanded && (
         <div className="px-4 py-4 space-y-6">
-          {/* Priority Filters */}
           <div>
             <h3 className="text-sm font-medium text-gray-900 mb-3">Priority</h3>
             <div className="flex flex-wrap gap-2">
@@ -123,7 +119,6 @@ export default function FilterPanel({ onFilterChange, currentFilters = { priorit
             </div>
           </div>
 
-          {/* Status Filters */}
           <div>
             <h3 className="text-sm font-medium text-gray-900 mb-3">Status</h3>
             <div className="flex flex-wrap gap-2">
@@ -151,7 +146,6 @@ export default function FilterPanel({ onFilterChange, currentFilters = { priorit
             </div>
           </div>
 
-          {/* Active Filters Summary */}
           {hasActiveFilters && (
             <div className="pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">

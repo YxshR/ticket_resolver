@@ -37,7 +37,6 @@ export default function Dashboard() {
       }
       setError(null)
       
-      // Build query parameters for filtering
       const queryParams = new URLSearchParams()
       const currentFilters = filterParams || filters
       
@@ -49,12 +48,11 @@ export default function Dashboard() {
         queryParams.set('status', currentFilters.status.join(','))
       }
       
-      // Use the enhanced API client
       const { response, result: data } = await TicketApiClient.fetchTickets(currentFilters)
       
       setTickets(data.tickets || [])
       setFilteredTickets(data.tickets || [])
-      setRetryCount(0) // Reset retry count on success
+      setRetryCount(0)
       
       if (!showLoadingSpinner) {
         showSuccess('Tickets refreshed successfully')
@@ -63,10 +61,6 @@ export default function Dashboard() {
       const { userMessage } = handleApiError(err, 'Fetch tickets')
       setError(userMessage)
       setRetryCount(prev => prev + 1)
-      
-      if (!showLoadingSpinner) {
-        // Error already shown by handleApiError
-      }
     } finally {
       if (showLoadingSpinner) {
         setIsLoading(false)
@@ -76,13 +70,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchTickets()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
-  // Handle filter changes
   const handleFilterChange = useCallback((newFilters) => {
     setFilters(newFilters)
     fetchTickets(newFilters)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleStatusUpdate = (updatedTicket) => {
     setTickets(prevTickets => 
@@ -97,18 +90,15 @@ export default function Dashboard() {
     )
   }
 
-  // Handle refresh with better UX
   const handleRefresh = useCallback(() => {
-    fetchTickets(filters, false) // Don't show loading spinner for manual refresh
+    fetchTickets(filters, false)
   }, [filters])
 
-  // WebSocket event handlers
   const handleTicketCreated = useCallback((data) => {
     console.log('Real-time ticket created:', data)
     if (data.ticket) {
       setTickets(prevTickets => [data.ticket, ...prevTickets])
       
-      // Check if new ticket matches current filters
       const matchesFilters = (
         (filters.priority.length === 0 || filters.priority.includes(data.ticket.priority)) &&
         (filters.status.length === 0 || filters.status.includes(data.ticket.status))
@@ -131,7 +121,6 @@ export default function Dashboard() {
         )
       )
       
-      // Check if updated ticket matches current filters
       const matchesFilters = (
         (filters.priority.length === 0 || filters.priority.includes(data.ticket.priority)) &&
         (filters.status.length === 0 || filters.status.includes(data.ticket.status))
@@ -141,7 +130,6 @@ export default function Dashboard() {
         const existingTicket = prevTickets.find(t => t.id === data.ticket.id)
         
         if (matchesFilters) {
-          // Add or update ticket in filtered list
           if (existingTicket) {
             return prevTickets.map(ticket => 
               ticket.id === data.ticket.id ? data.ticket : ticket
@@ -150,7 +138,6 @@ export default function Dashboard() {
             return [data.ticket, ...prevTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           }
         } else {
-          // Remove ticket from filtered list if it no longer matches
           return prevTickets.filter(ticket => ticket.id !== data.ticket.id)
         }
       })
@@ -168,7 +155,6 @@ export default function Dashboard() {
         )
       )
       
-      // Check if updated ticket matches current filters
       const matchesFilters = (
         (filters.priority.length === 0 || filters.priority.includes(data.ticket.priority)) &&
         (filters.status.length === 0 || filters.status.includes(data.ticket.status))
@@ -178,7 +164,6 @@ export default function Dashboard() {
         const existingTicket = prevTickets.find(t => t.id === data.ticket.id)
         
         if (matchesFilters) {
-          // Add or update ticket in filtered list
           if (existingTicket) {
             return prevTickets.map(ticket => 
               ticket.id === data.ticket.id ? data.ticket : ticket
@@ -187,7 +172,6 @@ export default function Dashboard() {
             return [data.ticket, ...prevTickets].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
           }
         } else {
-          // Remove ticket from filtered list if it no longer matches
           return prevTickets.filter(ticket => ticket.id !== data.ticket.id)
         }
       })
@@ -196,20 +180,17 @@ export default function Dashboard() {
     }
   }, [showInfo, filters])
 
-  // Initialize WebSocket connection and event listeners
   useEffect(() => {
     console.log('Initializing WebSocket connection...')
     
     try {
       const socket = initializeSocketClient()
       
-      // Update connection status
       const updateConnectionStatus = () => {
         setSocketConnected(isSocketConnected())
         setSocketId(getSocketId())
       }
       
-      // Set up event listeners
       socket.on('connect', () => {
         console.log('Dashboard: Socket connected')
         updateConnectionStatus()
@@ -225,7 +206,6 @@ export default function Dashboard() {
         updateConnectionStatus()
       })
       
-      // Subscribe to ticket events
       const eventCallbacks = {
         onTicketCreated: handleTicketCreated,
         onTicketUpdated: handleTicketUpdated,
@@ -234,10 +214,8 @@ export default function Dashboard() {
       
       subscribeToTicketEvents(eventCallbacks)
       
-      // Initial connection status update
       updateConnectionStatus()
       
-      // Cleanup function
       return () => {
         console.log('Dashboard: Cleaning up WebSocket event listeners')
         unsubscribeFromTicketEvents(eventCallbacks)
@@ -288,7 +266,6 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-2 sm:space-y-0">
           <h3 className="text-xl font-semibold text-gray-900">All Tickets</h3>
           
-          {/* WebSocket Connection Status */}
           <ConnectionStatus showDetails={true} />
         </div>
         
@@ -302,7 +279,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Filter Panel */}
       <FilterPanel 
         onFilterChange={handleFilterChange}
         currentFilters={filters}

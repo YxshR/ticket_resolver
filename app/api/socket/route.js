@@ -3,7 +3,6 @@ import { initializeSocketIOServer, getSocketIO } from '@/app/lib/socketUtils';
 
 export async function GET() {
   try {
-    // Initialize the mock Socket.IO server
     initializeSocketIOServer();
     const io = getSocketIO();
     
@@ -12,7 +11,7 @@ export async function GET() {
     return NextResponse.json({ 
       success: true, 
       message: 'Mock Socket.IO server available',
-      port: 'mock', // No real port needed for mock implementation
+      port: 'mock',
       connectedClients,
       initialized: true,
       mode: 'development-mock'

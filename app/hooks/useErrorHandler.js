@@ -12,15 +12,12 @@ export function useErrorHandler() {
     let userMessage = `${context} failed`
     let shouldRetry = true
 
-    // Network errors
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       userMessage = 'Network error. Please check your connection and try again.'
     }
-    // Timeout errors
     else if (error.name === 'AbortError') {
       userMessage = 'Request timed out. Please try again.'
     }
-    // HTTP errors
     else if (error.message.includes('HTTP')) {
       const statusMatch = error.message.match(/HTTP (\d+)/)
       const status = statusMatch ? parseInt(statusMatch[1]) : null
@@ -38,17 +35,14 @@ export function useErrorHandler() {
         userMessage = 'Server error. Please try again later.'
       }
     }
-    // Validation errors
     else if (error.name === 'ValidationError' || error.message.includes('validation')) {
       userMessage = 'Please check your input and try again.'
       shouldRetry = false
     }
-    // Generic errors
     else if (error.message) {
       userMessage = error.message
     }
 
-    // Show appropriate toast
     if (shouldRetry) {
       showError(userMessage)
     } else {
@@ -78,7 +72,6 @@ export function useErrorHandler() {
   }
 }
 
-// Utility function to create error objects with context
 export function createError(message, name = 'Error', cause = null) {
   const error = new Error(message)
   error.name = name
@@ -88,24 +81,19 @@ export function createError(message, name = 'Error', cause = null) {
   return error
 }
 
-// Utility function to check if error is retryable
 export function isRetryableError(error) {
-  // Network errors are usually retryable
   if (error.name === 'TypeError' && error.message.includes('fetch')) {
     return true
   }
   
-  // Timeout errors are retryable
   if (error.name === 'AbortError') {
     return true
   }
   
-  // Server errors (5xx) are retryable
   if (error.message.includes('HTTP 5')) {
     return true
   }
   
-  // Rate limiting might be retryable
   if (error.message.includes('HTTP 429')) {
     return true
   }

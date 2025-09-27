@@ -101,7 +101,6 @@ export default function ErrorDisplay({
   )
 }
 
-// Preset error components for common use cases
 export function NetworkErrorDisplay({ onRetry }) {
   return (
     <ErrorDisplay

@@ -20,7 +20,6 @@ export default function ConnectionStatus({
       const connected = isSocketConnected()
       const id = getSocketId()
       
-      // Detect connection state changes
       if (connected !== isConnected) {
         if (connected) {
           showSuccess('Connected to real-time updates', { duration: 3000 })
@@ -39,10 +38,8 @@ export default function ConnectionStatus({
       setSocketId(id)
     }
 
-    // Check immediately
     checkConnection()
 
-    // Check periodically
     const interval = setInterval(checkConnection, 2000)
 
     return () => clearInterval(interval)
@@ -58,7 +55,6 @@ export default function ConnectionStatus({
       showInfo('Attempting to reconnect...', { duration: 3000 })
       forceReconnect()
       
-      // Wait a moment to see if reconnection succeeds
       setTimeout(() => {
         if (!isSocketConnected()) {
           showError('Failed to reconnect. Please refresh the page if issues persist.', { duration: 7000 })
@@ -73,7 +69,6 @@ export default function ConnectionStatus({
   }
 
   if (!showDetails && isConnected) {
-    // Simple connected indicator
     return (
       <div className={`flex items-center space-x-2 ${className}`}>
         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -84,7 +79,6 @@ export default function ConnectionStatus({
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      {/* Connection Status Indicator */}
       <div className={`w-3 h-3 rounded-full ${
         isConnected 
           ? 'bg-green-500 animate-pulse' 
@@ -93,7 +87,6 @@ export default function ConnectionStatus({
           : 'bg-red-500'
       }`}></div>
       
-      {/* Status Text */}
       <span className={`text-sm font-medium ${
         isConnected 
           ? 'text-green-700' 
@@ -109,14 +102,12 @@ export default function ConnectionStatus({
         }
       </span>
 
-      {/* Socket ID (if showing details and connected) */}
       {showDetails && isConnected && socketId && (
         <span className="text-xs text-gray-500">
           ({socketId.substring(0, 8)}...)
         </span>
       )}
 
-      {/* Reconnect Button (if disconnected) */}
       {!isConnected && !isReconnecting && (
         <button
           onClick={handleReconnect}
@@ -127,7 +118,6 @@ export default function ConnectionStatus({
         </button>
       )}
 
-      {/* Reconnect Attempts Counter */}
       {reconnectAttempts > 0 && (
         <span className="text-xs text-gray-500">
           (Attempt {reconnectAttempts})
@@ -137,7 +127,6 @@ export default function ConnectionStatus({
   )
 }
 
-// Simplified connection indicator for minimal UI
 export function ConnectionIndicator({ className = '' }) {
   const [isConnected, setIsConnected] = useState(false)
 

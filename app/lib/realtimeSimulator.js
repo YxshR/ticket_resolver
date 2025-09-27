@@ -1,8 +1,5 @@
 'use client';
 
-// Real-time simulation system for development
-// This simulates WebSocket events using browser APIs
-
 let eventBus = null;
 
 export function initializeRealtimeSimulator() {
@@ -37,7 +34,6 @@ export function broadcastRealtimeEvent(eventType, data) {
   }
 }
 
-// Specific event broadcasters
 export function broadcastTicketCreated(ticket) {
   broadcastRealtimeEvent('ticket:created', {
     type: 'TICKET_CREATED',

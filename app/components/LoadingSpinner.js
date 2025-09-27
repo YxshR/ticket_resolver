@@ -74,7 +74,6 @@ export default function LoadingSpinner({
   return spinner
 }
 
-// Preset loading components for common use cases
 export function PageLoadingSpinner({ text = 'Loading...' }) {
   return (
     <div className="flex items-center justify-center py-12">

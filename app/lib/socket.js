@@ -16,21 +16,17 @@ export function initializeSocket(httpServer) {
       }
     });
 
-    // Connection handling
     io.on('connection', (socket) => {
       console.log('Client connected:', socket.id);
 
-      // Handle client disconnect
       socket.on('disconnect', (reason) => {
         console.log('Client disconnected:', socket.id, 'Reason:', reason);
       });
 
-      // Handle connection errors
       socket.on('connect_error', (error) => {
         console.error('Connection error:', error);
       });
 
-      // Handle reconnection attempts
       socket.on('reconnect', (attemptNumber) => {
         console.log('Client reconnected:', socket.id, 'Attempt:', attemptNumber);
       });
@@ -39,7 +35,6 @@ export function initializeSocket(httpServer) {
         console.log('Client reconnection attempt:', attemptNumber);
       });
 
-      // Send connection confirmation
       socket.emit('connected', { 
         message: 'Connected to helpdesk server',
         socketId: socket.id,
@@ -60,7 +55,6 @@ export function getSocketInstance() {
   return io;
 }
 
-// Broadcasting functions for ticket events
 export function broadcastTicketCreated(ticket) {
   if (io) {
     console.log('Broadcasting ticket created:', ticket.id);
@@ -97,7 +91,6 @@ export function broadcastTicketStatusChanged(ticketId, oldStatus, newStatus, tic
   }
 }
 
-// Connection management
 export function getConnectedClientsCount() {
   return io ? io.engine.clientsCount : 0;
 }

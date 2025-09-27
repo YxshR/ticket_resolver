@@ -1,14 +1,9 @@
-// Simplified WebSocket utilities for Next.js integration
-// This approach uses a mock implementation for development and can be extended for production
-
 let mockClients = new Set();
 
 export function getSocketIO() {
-  // Return a mock Socket.IO instance for development
   return {
     emit: (event, data) => {
       console.log(`[Mock Socket.IO] Broadcasting event: ${event}`, data);
-      // In a real implementation, this would broadcast to all connected clients
       return true;
     },
     engine: {
@@ -19,10 +14,7 @@ export function getSocketIO() {
 
 export function initializeSocketIOServer() {
   console.log('Mock Socket.IO server initialized');
-  // In development, we'll use a simplified approach
-  // For production, you would implement a proper WebSocket server
   
-  // Simulate some connected clients for testing
   mockClients.add('mock-client-1');
   mockClients.add('mock-client-2');
   

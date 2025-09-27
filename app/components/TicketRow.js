@@ -60,27 +60,21 @@ export default function TicketRow({ ticket, onStatusUpdate }) {
 
     const previousStatus = optimisticStatus
     
-    // Clear any previous errors
     setError(null)
     
-    // Optimistic update
     setOptimisticStatus(newStatus)
     setIsUpdating(true)
 
     try {
-      // Use the enhanced API client that triggers real-time events
       const { response, result } = await TicketApiClient.updateTicketStatus(ticket.id, newStatus, ticket)
 
       if (result.success) {
-        // Call parent callback with updated ticket
         if (onStatusUpdate) {
           onStatusUpdate(result.ticket)
         }
         
-        // Show success message
         showSuccess(`Ticket #${ticket.id.substring(0, 8)} status updated to ${newStatus.replace('_', ' ').toLowerCase()}`)
       } else {
-        // Revert optimistic update on error
         setOptimisticStatus(previousStatus)
         const errorMessage = result.error || 'Failed to update ticket status'
         setError(errorMessage)
@@ -88,11 +82,9 @@ export default function TicketRow({ ticket, onStatusUpdate }) {
         console.error('Failed to update ticket status:', result.error)
       }
     } catch (error) {
-      // Revert optimistic update on error
       setOptimisticStatus(previousStatus)
       const { userMessage } = handleApiError(error, 'Update ticket status')
       setError(userMessage)
-      // Error already shown by handleApiError
     } finally {
       setIsUpdating(false)
     }
@@ -108,7 +100,6 @@ export default function TicketRow({ ticket, onStatusUpdate }) {
         <div className="max-w-[120px] sm:max-w-none truncate" title={ticket.name}>
           {ticket.name}
         </div>
-        {/* Show issue on mobile as subtitle */}
         <div className="sm:hidden text-xs text-gray-500 mt-1 max-w-[120px] truncate" title={ticket.issue}>
           {ticket.issue}
         </div>
@@ -150,7 +141,6 @@ export default function TicketRow({ ticket, onStatusUpdate }) {
             </div>
           )}
         </div>
-        {/* Show creation date on mobile as subtitle */}
         <div className="lg:hidden text-xs text-gray-500 mt-1">
           {formatDate(ticket.createdAt)}
         </div>
