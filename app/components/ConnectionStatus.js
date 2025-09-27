@@ -13,7 +13,7 @@ export default function ConnectionStatus({
   const [socketId, setSocketId] = useState(null)
   const [reconnectAttempts, setReconnectAttempts] = useState(0)
   const [isReconnecting, setIsReconnecting] = useState(false)
-  const { showError, showSuccess, showWarning } = useToast()
+  const { showError, showSuccess, showWarning, showInfo } = useToast()
 
   useEffect(() => {
     const checkConnection = () => {

@@ -116,7 +116,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div className="text-sm text-gray-500">
-              © 2024 Mini Helpdesk. Built with Next.js and TailwindCSS.
+              @ 2025
             </div>
             <div className="flex items-center space-x-4 text-sm text-gray-500">
               <ConnectionIndicator />

@@ -14,8 +14,7 @@ import {
   subscribeToTicketEvents, 
   unsubscribeFromTicketEvents,
   isSocketConnected,
-  getSocketId,
-  forceReconnect
+  getSocketId
 } from '../lib/socketClient'
 
 export default function Dashboard() {
@@ -23,8 +22,7 @@ export default function Dashboard() {
   const [filteredTickets, setFilteredTickets] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [socketConnected, setSocketConnected] = useState(false)
-  const [socketId, setSocketId] = useState(null)
+
   const [filters, setFilters] = useState({ priority: [], status: [] })
   const [retryCount, setRetryCount] = useState(0)
   const { showSuccess, showError, showInfo } = useToast()
@@ -48,7 +46,7 @@ export default function Dashboard() {
         queryParams.set('status', currentFilters.status.join(','))
       }
       
-      const { response, result: data } = await TicketApiClient.fetchTickets(currentFilters)
+      const { result: data } = await TicketApiClient.fetchTickets(currentFilters)
       
       setTickets(data.tickets || [])
       setFilteredTickets(data.tickets || [])
@@ -186,24 +184,18 @@ export default function Dashboard() {
     try {
       const socket = initializeSocketClient()
       
-      const updateConnectionStatus = () => {
-        setSocketConnected(isSocketConnected())
-        setSocketId(getSocketId())
-      }
+
       
       socket.on('connect', () => {
         console.log('Dashboard: Socket connected')
-        updateConnectionStatus()
       })
       
       socket.on('disconnect', () => {
         console.log('Dashboard: Socket disconnected')
-        updateConnectionStatus()
       })
       
       socket.on('reconnect', () => {
         console.log('Dashboard: Socket reconnected')
-        updateConnectionStatus()
       })
       
       const eventCallbacks = {
@@ -213,8 +205,6 @@ export default function Dashboard() {
       }
       
       subscribeToTicketEvents(eventCallbacks)
-      
-      updateConnectionStatus()
       
       return () => {
         console.log('Dashboard: Cleaning up WebSocket event listeners')
